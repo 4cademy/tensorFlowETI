@@ -213,4 +213,4 @@ for i in range(4,10):
     weight_list.append(interpreter.tensor(i)().transpose())
 
 # weights = np.asarray(weight_list, dtype=object)
-np.save('quantized_weights.npy', weight_list, allow_pickle=True)
+# np.save('quantized_weights.npy', weight_list, allow_pickle=True)
