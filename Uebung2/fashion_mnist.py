@@ -18,7 +18,7 @@ class_names = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat', 'Sandal', 
 
 # Explore the data. Explore the shapes of training and validation dataset
 # Not required for building the model.
-print (colored(train_images.shape, 'green'))
+print(colored(train_images.shape, 'green'))
 print(colored(len(train_labels), 'green'))
 print(colored(train_labels, 'green'))
 
@@ -35,9 +35,9 @@ train_images = train_images / 255.0
 test_images = test_images / 255.0
 
 # Explore the scaled data by printing few images
-plt.figure(figsize=(10,10))
+plt.figure(figsize=(10, 10))
 for i in range(25):
-    plt.subplot(5,5,i+1)
+    plt.subplot(5, 5, i + 1)
     plt.xticks([])
     plt.yticks([])
     plt.grid(False)
@@ -59,11 +59,10 @@ model.compile(optimizer='adam',
               metrics=['accuracy'])
 
 # Train the model with the training data. We will be using the fit function for this purpose
-model.fit(train_images, train_labels, epochs=2, batch_size=1, validation_split=0.1)
+model.fit(train_images, train_labels, epochs=2, batch_size=10, validation_split=0.1)
 
 # Evaluate the accuracy
-test_loss, test_acc = model.evaluate(test_images,  test_labels, verbose=2)
-
+test_loss, test_acc = model.evaluate(test_images, test_labels, verbose=2)
 
 print('\nTest accuracy:', test_acc)
 # Make predictions about all test images and a single test image
@@ -83,7 +82,7 @@ img = test_images[1]
 print(colored((img.shape), 'green'))
 # add to a list
 # Add the image to a batch where it's the only member.
-img = (np.expand_dims(img,0))
+img = (np.expand_dims(img, 0))
 print(colored((img.shape), 'green'))
 
 predictions_single = model.predict(img)
@@ -91,19 +90,18 @@ predictions_single = model.predict(img)
 print(colored(np.argmax(predictions_single[0]), 'green'))
 print(colored(test_labels[1], 'red'))
 
+img_array = np.array(Image.open('schuh.png').convert('L').resize((28, 28)))
+print(img_array.shape)
+plt.figure()
+plt.imshow(img_array)
+plt.colorbar()
+plt.grid(False)
+plt.show()
 
-# img_array= np.array(Image.open('panda.jpg').convert('L').resize((28,28)))
-# print(img_array.shape)
-# plt.figure()
-# plt.imshow(img_array)
-# plt.colorbar()
-# plt.grid(False)
-# plt.show()
-#
-# img_array = (np.expand_dims(img_array,0))
-# print(colored((img_array.shape), 'green'))
-#
-# predictions_single = model.predict(img_array)
-#
-# print(colored(np.argmax(predictions_single[0]), 'green'))
-# print(colored(test_labels[1], 'red'))
+img_array = (np.expand_dims(img_array, 0))
+print(colored((img_array.shape), 'green'))
+
+predictions_single = model.predict(img_array)
+
+print(colored(np.argmax(predictions_single[0]), 'green'))
+print(colored(test_labels[1], 'red'))
