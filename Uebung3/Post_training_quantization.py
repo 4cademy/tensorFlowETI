@@ -5,6 +5,26 @@ from tensorflow import keras
 import matplotlib.pyplot as pl
 import math
 
+
+# to quantize a tensor
+def quantize(values, bits):
+    range = 2 ** (bits - 1)
+    maxVal = tf.reduce_max(tf.abs(values))
+    step = (maxVal / range)
+    step = tf.pow(2.0, tf.math.ceil(tf.math.log(step) / math.log(2)))
+    qValues = tf.round(values / tf.cast(step, tf.float32))
+    qValues = step * tf.clip_by_value(qValues, -range, range - 1)
+    return qValues
+
+def quantizeImg(values, bits):
+    range = 2 ** (bits - 1)
+    maxVal = np.max(np.abs(values))
+    step = (maxVal / range)
+    step = np.float_power(2.0, np.ceil(np.log(step) / math.log(2)))
+    qValues = np.rint(values / tf.cast(step, tf.float32))
+    qValues = step * np.clip(qValues, -range, range - 1)
+    return qValues
+
 os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 print(tf.version.VERSION)
 
@@ -16,6 +36,18 @@ test_labels = test_labels
 
 train_images = train_images.reshape(-1, 28 * 28) / 255.0
 test_images = test_images.reshape(-1, 28 * 28) / 255.0
+
+# export one image
+pl.imshow(train_images[0].reshape(28,28), cmap='gray')
+pl.show()
+
+# quantize the input data
+for i in range(len(train_images)):
+    train_images[i] = quantizeImg(train_images[i], 8)
+
+# quantize the input data
+pl.imshow(train_images[0].reshape(28,28), cmap='gray')
+pl.show()
 
 print(train_images.shape, test_images.shape)  # (1000, 784) (1000, 784)
 
@@ -33,17 +65,6 @@ def create_model():
                   metrics=[tf.keras.metrics.SparseCategoricalAccuracy()])
 
     return model
-
-
-# to quantize a tensor
-def quantize(values, bits):
-    range = 2 ** (bits - 1)
-    maxVal = tf.reduce_max(tf.abs(values))
-    step = (maxVal / range)
-    step = tf.pow(2.0, tf.math.ceil(tf.math.log(step) / math.log(2)));
-    qValues = tf.round(values / tf.cast(step, tf.float32))
-    qValues = step * tf.clip_by_value(qValues, -range, range - 1)
-    return qValues
 
 
 # Create a basic model instance
